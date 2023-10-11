@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'bottomnavigation.dart';
+import 'homepage.dart';
+import 'add to cart.dart';
+import 'payment_page.dart';
+import 'package:provider/provider.dart';
 
 class SubcategoryDetailPage extends StatefulWidget {
   final String image;
@@ -18,17 +23,17 @@ class SubcategoryDetailPage extends StatefulWidget {
 }
 
 class _SubcategoryDetailPageState extends State<SubcategoryDetailPage> {
-  int _currentIndex = 0; // Index for the selected bottom navigation item
+  int _currentIndex = 0;
+  final GlobalKey<MyBottomNavigationBarState> bottomNavigationKey =
+      GlobalKey<MyBottomNavigationBarState>();
 
-  // Define the names of the bottom navigation items
-  final List<String> _bottomNavBarItems = [
-    'Home',
-    'Add to Cart',
-    'Payment',
-  ];
+  final CartModel cart = CartModel();
 
   @override
   Widget build(BuildContext context) {
+    final cart =
+        Provider.of<CartModel>(context, listen: false); // Add this line
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Subcategory Detail'),
@@ -53,6 +58,14 @@ class _SubcategoryDetailPageState extends State<SubcategoryDetailPage> {
               children: <Widget>[
                 ElevatedButton(
                   onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PaymentPage(
+                          bottomNavigationKey: bottomNavigationKey,
+                        ),
+                      ),
+                    );
                     // Handle Payment button press
                   },
                   child: Text('Payment'),
@@ -60,6 +73,18 @@ class _SubcategoryDetailPageState extends State<SubcategoryDetailPage> {
                 ElevatedButton(
                   onPressed: () {
                     // Handle Add to Cart button press
+                    cart.addToCart(
+                      widget.subcatname,
+                      double.parse(widget.price),
+                      widget.image,
+                    );
+                    // Provide feedback to the user
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Added to Cart'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
                   },
                   child: Text('Add to Cart'),
                 ),
@@ -68,20 +93,42 @@ class _SubcategoryDetailPageState extends State<SubcategoryDetailPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: MyBottomNavigationBar(
         currentIndex: _currentIndex,
-        items: _bottomNavBarItems.map((item) {
-          return BottomNavigationBarItem(
-            icon: Icon(Icons.home), // You can use different icons here
-            label: item,
-          );
-        }).toList(),
         onTap: (index) {
-          // Handle bottom navigation item taps here
           setState(() {
             _currentIndex = index;
           });
+          if (index == 0) {
+            // Navigate to MyHomePage when "Home" is tapped
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+            );
+          } else if (index == 1) {
+            // Navigate to the CartPage when "Cart" is tapped
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CartPage(
+                  bottomNavigationKey: bottomNavigationKey,
+                  cart: cart,
+                ),
+              ),
+            );
+          } else if (index == 2) {
+            // Navigate to the PaymentPage when "Payment" is tapped
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PaymentPage(
+                  bottomNavigationKey: bottomNavigationKey,
+                ),
+              ),
+            );
+          }
         },
+        key: bottomNavigationKey,
       ),
     );
   }

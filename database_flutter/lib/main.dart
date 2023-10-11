@@ -1,237 +1,276 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'product.dart';
-import 'subcategory_detail_page.dart';
+import 'add to cart.dart';
+import 'package:provider/provider.dart';
+import 'homepage.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => CartModel(), // Create CartModel instance
+      child: LoginApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(), // Pass the cart instance here
+      title: 'Your App',
+      home: LoginApp(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class LoginApp extends StatelessWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  List<Map<String, dynamic>> allTimeGreatGiftsList = [];
-  List<Map<String, dynamic>> allCategoriesList = [];
-  List<Map<String, dynamic>> homePageProducts1 = [];
-  List<Map<String, dynamic>> homePageProducts = [];
-  List<Map<String, dynamic>> seasonsspeciallist = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchJsonData();
-  }
-
-  Future<void> fetchJsonData() async {
-    final url = Uri.parse("http://iphone.us2guntur.com/AlltypeCategoriesList");
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      setState(() {
-        allTimeGreatGiftsList = List.from(jsonData["Alltimegreatgiftslist"]);
-        allCategoriesList = List.from(jsonData["Allcategories list"]);
-        homePageProducts1 = List.from(jsonData["HomePageProducts1"]);
-        homePageProducts = List.from(jsonData["HomePageProducts"]);
-        seasonsspeciallist = List.from(jsonData["seasonsspeciallist"]);
-      });
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
-  void navigateToSubcategoryDetail() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SubcategoryDetailPage(
-          image: 'your_image_url_here',
-          subcatname: 'Product Name',
-          price: 'Product Price',
-          description: 'Product Description',
-          // Pass the ShoppingCart instance
-        ),
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Login Page')),
+        body: LoginPage(),
       ),
     );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  bool isSignedIn = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Email or Username Input Field
+          TextFormField(
+            controller: _emailController,
+            decoration: InputDecoration(labelText: 'Email or Username'),
+          ),
+          // Password Input Field
+          TextFormField(
+            controller: _passwordController,
+            decoration: InputDecoration(labelText: 'Password'),
+            obscureText: true,
+          ),
+          SizedBox(height: 20), // Add spacing between inputs and button
+          Center(
+            child: ElevatedButton(
+              onPressed: _login,
+              child: Text('Login'),
+            ),
+          ),
+          SizedBox(height: 20), // Add spacing below the button
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(isSignedIn
+                    ? "You are signed in"
+                    : "You are not signed in?"),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const InputPage()),
+                    );
+                  },
+                  child: Text('Sign in'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _login() {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    // Implement your login logic here
+    if (email.isNotEmpty && password.isNotEmpty) {
+      // Successful login, you can navigate to another page or perform actions
+      // For example, you can use Navigator to push a new screen:
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage()),
+      );
+      // Set the signed-in state to true
+      setState(() {
+        isSignedIn = true;
+      });
+    } else {
+      // Handle login failure, e.g., show an error message
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Login Failed'),
+            content: Text('Please enter a valid email/username and password.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+}
+
+class InputPage extends StatefulWidget {
+  const InputPage({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _InputPageState createState() => _InputPageState();
+}
+
+class _InputPageState extends State<InputPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$');
+  final _phoneRegExp = RegExp(r'^[0-9]{10}$');
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  String _firstName = '';
+  String _lastName = '';
+  String _email = '';
+  String _phoneNumber = '';
+  String _address = '';
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      // Form fields are valid, you can process the data here
+      // For now, let's print the data
+      print('First Name: $_firstName');
+      print('Last Name: $_lastName');
+      print('Email: $_email');
+      print('Phone Number: $_phoneNumber');
+      print('Address: $_address');
+      print('_CreatePassword: $_passwordController');
+      print('_confirmPasswordController: $_confirmPasswordController');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Images and Names from JSON URL'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            // All Time Great Gifts List
-            AppBar(
-              title: Text('All Time Great Gifts List'),
-            ),
-            SizedBox(height: 10),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: allTimeGreatGiftsList.length,
-              itemBuilder: (context, index) {
-                final item = allTimeGreatGiftsList[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the new page and pass the category ID
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryDetailPage(categoryId: item['category_id']),
-                      ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(item['imagepath']),
-                    title: Text(item['categoryname']),
-                    subtitle: Text(item['category_id']),
-                  ),
-                );
-              },
-            ),
-
-            // Home Page Products 1
-            AppBar(
-              title: Text('Home Page Products 1'),
-            ),
-            SizedBox(height: 10),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: homePageProducts1.length,
-              itemBuilder: (context, index) {
-                final item = homePageProducts1[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the new page and pass the category ID
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryDetailPage(categoryId: item['category_id']),
-                      ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(item['imagepath']),
-                    title: Text(item['categoryname']),
-                    subtitle: Text(item['category_id']),
-                  ),
-                );
-              },
-            ),
-
-            // Home Page Products
-            AppBar(
-              title: Text('Home Page Products'),
-            ),
-            SizedBox(height: 10),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: homePageProducts.length,
-              itemBuilder: (context, index) {
-                final item = allTimeGreatGiftsList[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the new page and pass the category ID
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryDetailPage(categoryId: item['category_id']),
-                      ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(item['imagepath']),
-                    title: Text(item['categoryname']),
-                    subtitle: Text(item['category_id']),
-                  ),
-                );
-              },
-            ),
-
-            // All Categories List
-            AppBar(
-              title: Text('All Categories List'),
-            ),
-            SizedBox(height: 10),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: allCategoriesList.length,
-              itemBuilder: (context, index) {
-                final item = allCategoriesList[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the new page and pass the category ID
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryDetailPage(categoryId: item['category_id']),
-                      ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(item['imagepath']),
-                    title: Text(item['categoryname']),
-                    subtitle: Text(item['category_id']),
-                  ),
-                );
-              },
-            ),
-
-            // Seasons Special List
-            AppBar(
-              title: Text('Seasons Special List'),
-            ),
-            SizedBox(height: 10),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: seasonsspeciallist.length,
-              itemBuilder: (context, index) {
-                final item = seasonsspeciallist[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the new page and pass the category ID
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryDetailPage(categoryId: item['category_id']),
-                      ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(item['imagepath']),
-                    title: Text(item['categoryname']),
-                    subtitle: Text(item['category_id']),
-                  ),
-                );
-              },
-            ),
-          ],
+      appBar: AppBar(title: const Text('Input Page')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'First Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your first name';
+                  }
+                  return null;
+                },
+                onSaved: (value) => _firstName = value!,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Last Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your last name';
+                  }
+                  return null;
+                },
+                onSaved: (value) => _lastName = value!,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your email address';
+                  }
+                  if (!_emailRegExp.hasMatch(value)) {
+                    return 'Invalid email address (must end with @gmail.com)';
+                  }
+                  return null;
+                },
+                onSaved: (value) => _email = value!,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Phone Number'),
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your phone number';
+                  }
+                  if (!_phoneRegExp.hasMatch(value)) {
+                    return 'Invalid phone number (10 digits required)';
+                  }
+                  return null;
+                },
+                onSaved: (value) => _phoneNumber = value!,
+              ),
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a password';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _confirmPasswordController,
+                decoration: InputDecoration(labelText: 'Confirm Password'),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please confirm your password';
+                  }
+                  if (value != _passwordController.text) {
+                    return 'Passwords do not match';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Address'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your address';
+                  }
+                  return null;
+                },
+                onSaved: (value) => _address = value!,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _submitForm,
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ),
     );

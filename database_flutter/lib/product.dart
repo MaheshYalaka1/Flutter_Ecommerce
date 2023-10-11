@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'subcategory_detail_page.dart';
+import 'add to cart.dart';
+import 'bottomnavigation.dart';
+import 'payment_page.dart';
+import 'homepage.dart';
 
 class CategoryDetailPage extends StatefulWidget {
   final String categoryId;
@@ -13,17 +17,12 @@ class CategoryDetailPage extends StatefulWidget {
 }
 
 class _CategoryDetailPageState extends State<CategoryDetailPage> {
+  int _currentIndex = 0;
+  final GlobalKey<MyBottomNavigationBarState> bottomNavigationKey =
+      GlobalKey<MyBottomNavigationBarState>();
+  final CartModel cart = CartModel();
   Map<String, dynamic> finalResult = {}; // Store the result from the API
   bool isLoading = true; // Track whether data is being fetched
-  int _currentIndex = 0; // Index for the selected bottom navigation item
-
-  // Define the names of the bottom navigation items
-  final List<String> _bottomNavBarItems = [
-    'Home',
-    'Add to Cart',
-    'Payment',
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -124,20 +123,40 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: MyBottomNavigationBar(
         currentIndex: _currentIndex,
-        items: _bottomNavBarItems.map((item) {
-          return BottomNavigationBarItem(
-            icon: Icon(Icons.home), // You can use different icons here
-            label: item,
-          );
-        }).toList(),
         onTap: (index) {
-          // Handle bottom navigation item taps here
           setState(() {
             _currentIndex = index;
           });
+          if (index == 0) {
+            // Navigate to MyHomePage when "Home" is tapped
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+            );
+          } else if (index == 1) {
+            // Navigate to the CartPage when "Cart" is tapped
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CartPage(
+                  bottomNavigationKey: bottomNavigationKey,
+                  cart: cart,
+                ),
+              ),
+            );
+          } else if (index == 2) {
+            // Navigate to the PaymentPage when "Payment" is tapped
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      PaymentPage(bottomNavigationKey: bottomNavigationKey)),
+            );
+          }
         },
+        key: bottomNavigationKey, // Pass the key
       ),
     );
   }
