@@ -1,5 +1,5 @@
 import 'package:database_flutter/app/splash_screen/splash_screen.dart';
-import 'package:database_flutter/firebase.dart';
+import 'package:database_flutter/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:database_flutter/user_auth/presentation/pages/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -22,7 +22,7 @@ Future main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => CartModel(), // Create CartModel instance
-      child: Login(),
+      child: MyApp(),
     ),
   );
 }
