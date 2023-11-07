@@ -1,3 +1,4 @@
+import 'package:database_flutter/OnlinePayment.dart';
 import 'package:flutter/material.dart';
 import 'bottomnavigation.dart';
 
@@ -18,12 +19,25 @@ class _PaymentPageState extends State<PaymentPage> {
       color: _selectedPaymentOption == option
           ? Colors.pink[100]
           : Colors.transparent,
-      borderRadius: BorderRadius.circular(10), // Rounded corners
+      borderRadius: BorderRadius.circular(10),
       border: Border.all(
-        color: Colors.pink, // Border color
-        width: 2, // Border width
+        color: Colors.pink,
+        width: 2,
       ),
     );
+  }
+
+  void _navigateToNextScreen() {
+    if (_selectedPaymentOption == 0) {
+      // Cash on Delivery
+      // Navigate to the "Continue" screen
+    } else {
+      // Online Payment
+      // Navigate to the "Proceed to Pay" screen
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => UPIPaymentScreen(),
+      ));
+    }
   }
 
   @override
@@ -49,7 +63,7 @@ class _PaymentPageState extends State<PaymentPage> {
               });
             },
             child: Container(
-              decoration: _getDecoration(0), // Apply decoration
+              decoration: _getDecoration(0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -63,7 +77,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     },
                   ),
                   Container(
-                    padding: EdgeInsets.all(8), // Add padding to text
+                    padding: EdgeInsets.all(8),
                     child: Text(
                       'Cash on Delivery',
                       style: TextStyle(fontSize: 18),
@@ -82,7 +96,7 @@ class _PaymentPageState extends State<PaymentPage> {
               });
             },
             child: Container(
-              decoration: _getDecoration(1), // Apply decoration
+              decoration: _getDecoration(1),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -96,7 +110,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     },
                   ),
                   Container(
-                    padding: EdgeInsets.all(8), // Add padding to text
+                    padding: EdgeInsets.all(8),
                     child: Text(
                       'Online Payment',
                       style: TextStyle(fontSize: 18),
@@ -111,19 +125,24 @@ class _PaymentPageState extends State<PaymentPage> {
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_selectedPaymentOption == 0) {
-                    // Cash on Delivery
-                    // Show "Continue" button logic here
-                  } else {
-                    // Online Payment
-                    // Show "Proceed to Pay" button logic here
-                  }
-                },
-                child: Text(
-                  _selectedPaymentOption == 0 ? 'Continue' : 'Proceed to Pay',
-                  style: TextStyle(fontSize: 20),
+              child: Container(
+                height: 60, // Set the desired button height
+                child: InkWell(
+                  onTap: _navigateToNextScreen,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                    ),
+                    padding: EdgeInsets.all(16),
+                    child: Center(
+                      child: Text(
+                        _selectedPaymentOption == 0
+                            ? 'Continue'
+                            : 'Proceed to Pay',
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

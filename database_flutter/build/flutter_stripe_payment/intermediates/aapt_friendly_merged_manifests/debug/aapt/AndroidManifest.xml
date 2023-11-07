@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dormmom.flutter_stripe_payment" >
+
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="21" />
+
+    <application android:theme="@style/Theme.AppCompat.Light.Dialog" >
+        <activity
+            android:name="com.dormmom.flutter_stripe_payment.activity.PaymentActivity"
+            android:label="Add Payment Method" />
+        <activity
+            android:name="com.dormmom.flutter_stripe_payment.activity.GooglePayActivity"
+            android:label="Google Pay" />
+    </application>
+
+</manifest>

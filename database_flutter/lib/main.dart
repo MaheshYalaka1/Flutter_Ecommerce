@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "firebase auth",
-      home: SplashScreen(child: Login()),
+      home: SplashScreen(child: LoginPage()),
     );
   }
 }

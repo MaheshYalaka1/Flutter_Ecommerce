@@ -34,27 +34,34 @@ class MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       },
       items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Icon(
+            Icons.home,
+            color: Color.fromRGBO(227, 29, 187, 0.937),
+          ),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart),
+          icon: Icon(
+            Icons.shopping_cart,
+            color: Colors.black,
+          ),
           label: 'Cart',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.payment),
+          icon: Icon(
+            Icons.payment,
+            color: Colors.black,
+          ),
           label: 'Payment',
         ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.person,
+            color: Colors.black,
+          ),
+          label: 'profile',
+        ),
       ],
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Home Screen'),
     );
   }
 }

@@ -1,0 +1,41 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:1:1-7:12
+INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:1:1-7:12
+INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:1:1-7:12
+	package
+		ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:2:3-47
+		INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:1:11-69
+application
+ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:3:5-6:19
+	android:theme
+		ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:3:18-69
+activity#com.dormmom.flutter_stripe_payment.activity.PaymentActivity
+ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:4:9-98
+	android:label
+		ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:4:19-53
+	android:name
+		ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:4:54-94
+activity#com.dormmom.flutter_stripe_payment.activity.GooglePayActivity
+ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:5:9-92
+	android:label
+		ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:5:19-45
+	android:name
+		ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml:5:46-88
+uses-sdk
+INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Gajul\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_stripe_payment-0.0.18\android\src\main\AndroidManifest.xml
