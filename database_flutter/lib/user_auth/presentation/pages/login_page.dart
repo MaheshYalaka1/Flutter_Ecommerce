@@ -1,4 +1,4 @@
-import 'package:database_flutter/homepage.dart';
+import 'package:database_flutter/TabScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,10 +10,19 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
   @override
   State<LoginPage> createState() => _LoginPage();
+
+  getCurrentUser() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    return _auth.currentUser;
+  }
 }
 
 class _LoginPage extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  Future<User?> getCurrentUser() async {
+    return _auth.currentUser;
+  }
+
   final ForceRecaptchaFlow = true;
 
   TextEditingController usernameController = TextEditingController();
@@ -25,7 +34,7 @@ class _LoginPage extends State<LoginPage> {
 
   String otpPin = "";
   String countryDial = "+1";
-  String verID = " "; // Initialize verification ID for OTP
+  String verificationId = ""; // Initialize verification ID for OTP
 
   int screenState = 0; // 0 for registration, 1 for OTP
   Color primaryColor = const Color(0xff0074E4); // Primary color
@@ -37,20 +46,19 @@ class _LoginPage extends State<LoginPage> {
   }
 
   Future<void> _checkLoginStatus() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    //print('is login', isLoggedIn);
-    print("isLogin Value: $isLoggedIn");
-    if (isLoggedIn) {
-      // ignore: use_build_context_synchronously
-      Navigator.push(
+    final User? user = _auth.currentUser;
+
+    if (user != null) {
+      // The user is already logged in, navigate to the main screen
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => MyHomePage()),
+        MaterialPageRoute(builder: (context) => TabScreen()),
       );
-    } else {}
+    }
   }
 
   // Function to verify the user's phone number using Firebase Authentication
+
   Future<void> verifyPhone(String number) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: number,
@@ -63,15 +71,15 @@ class _LoginPage extends State<LoginPage> {
       },
       verificationFailed: (e) {
         if (e.code == "invalid-phone-number") {
-          showSnackBarText('Error' 'Provided phone number is not valid.');
+          showSnackBarText('Error: Provided phone number is not valid.');
         } else {
-          showSnackBarText('Error' 'Something went wrong. Try again.');
+          showSnackBarText('Error: Something went wrong. Try again.');
         }
       },
       codeSent: (String verificationId, int? resendToken) {
         // OTP code is sent, transition to OTP screen
         showSnackBarText("OTP sent !");
-        verID = verificationId;
+        this.verificationId = verificationId; // Save the verificationId
         setState(() {
           screenState = 1;
         });
@@ -84,22 +92,28 @@ class _LoginPage extends State<LoginPage> {
 
   // Function to verify the OTP entered by the user
   Future<void> verifyOTP() async {
-    await _auth
-        .signInWithCredential(
-      PhoneAuthProvider.credential(
-        verificationId: verID,
-        smsCode: otpPin,
-      ),
-    )
-        .whenComplete(() async {
-      // if user is once login its shows always homepage until signout
+    try {
+      await _auth.signInWithCredential(
+        PhoneAuthProvider.credential(
+          verificationId: verificationId,
+          smsCode: otpPin,
+        ),
+      );
+
+      // If verification is successful, set 'isLoggedIn' to true in SharedPreferences
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
+
       // Redirect to the home page upon successful verification
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => MyHomePage(),
-      ));
-    });
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => TabScreen(),
+        ),
+      );
+    } catch (e) {
+      // Handle authentication error, which likely means the OTP is incorrect
+      showSnackBarText("Error: Incorrect OTP. Please try again.");
+    }
   }
 
   void showSnackBarText(String text) {

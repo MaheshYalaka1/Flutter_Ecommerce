@@ -1,28 +1,65 @@
+import 'package:database_flutter/payment_page.dart';
+import 'package:database_flutter/signOut.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'homepage.dart';
 import 'subcategory_detail_page.dart';
 import 'add_to_cart.dart';
-import 'bottomnavigation.dart';
-import 'payment_page.dart';
-import 'homepage.dart';
 
 class CategoryDetailPage extends StatefulWidget {
   final String categoryId;
-
-  CategoryDetailPage({required this.categoryId});
+  final String CategorysName;
+  CategoryDetailPage({
+    required this.categoryId,
+    required this.CategorysName,
+  });
 
   @override
   _CategoryDetailPageState createState() => _CategoryDetailPageState();
 }
 
 class _CategoryDetailPageState extends State<CategoryDetailPage> {
-  int _currentIndex = 0;
-  final GlobalKey<MyBottomNavigationBarState> bottomNavigationKey =
-      GlobalKey<MyBottomNavigationBarState>();
   final CartModel cart = CartModel();
-  Map<String, dynamic> finalResult = {}; // Store the result from the API
-  bool isLoading = true; // Track whether data is being fetched
+  Map<String, dynamic> finalResult = {};
+  bool isLoading = true;
+
+  void _onTap(int index) {
+    if (index == 0) {
+      // Navigate to MyHomePage when "Home" is tapped
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage()),
+      );
+    } else if (index == 1) {
+      // Navigate to CartPage when "Cart" is tapped
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CartPage(),
+        ),
+      );
+    } else if (index == 2) {
+      // Navigate to PaymentPage when "Payment" is tapped
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentPage(
+              // Pass the key here
+              ),
+        ),
+      );
+    } else if (index == 3) {
+      // Navigate to ProfilePage when "Profile" is tapped
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfilePage(),
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -36,12 +73,11 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      final result = jsonData[
-          "finalresult"]; // Use the appropriate key from the API response
+      final result = jsonData["finalresult"];
 
       setState(() {
         finalResult = result;
-        isLoading = false; // Set isLoading to false when data is available
+        isLoading = false;
       });
     } else {
       throw Exception('Failed to load data');
@@ -52,36 +88,35 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Category Detail'),
+        title: Text('${widget.CategorysName}'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Category ID: ${widget.categoryId}'),
-            SizedBox(height: 20),
-            Text('Final Result:'),
-            isLoading
-                ? CircularProgressIndicator() // Show loading indicator when data is being fetched
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
                 : finalResult.isNotEmpty
-                    ? Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: <Widget>[
-                              Text('Subcategories:'),
-                              GridView.count(
-                                crossAxisCount: 2,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                children: List.generate(
-                                  finalResult["related_subcatslist"].length,
-                                  (index) {
-                                    final subcategory =
-                                        finalResult["related_subcatslist"]
-                                            [index];
+                    ? SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            Text('Subcategories:'),
+                            GridView.count(
+                              crossAxisCount: 2,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              children: List.generate(
+                                finalResult["related_subcatslist"].length,
+                                (index) {
+                                  final subcategory =
+                                      finalResult["related_subcatslist"][index];
+                                  final price = subcategory["price"];
+
+                                  if (price != null) {
                                     return GestureDetector(
                                       onTap: () {
-                                        // Navigate to the subcategory detail page
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -90,7 +125,7 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
                                               image: subcategory["image_path"],
                                               subcatname:
                                                   subcategory["subcatname"],
-                                              price: subcategory["price"],
+                                              price: price,
                                               description: subcategory["desc"],
                                             ),
                                           ),
@@ -105,58 +140,25 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
                                               height: 100,
                                             ),
                                             Text(subcategory["subcatname"]),
-                                            Text(
-                                                'Price: \$${subcategory["price"]}'),
+                                            Text('Price: \$${price}'),
                                           ],
                                         ),
                                       ),
                                     );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                                  }
+                                  return Container();
+                                },
+                                // ignore: unnecessary_null_comparison
+                              ).where((widget) => widget != null).toList(),
+                            )
+                          ],
                         ),
                       )
-                    : Text(
-                        'No data available'), // Show a message if no data is available
-          ],
-        ),
-      ),
-      bottomNavigationBar: MyBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          if (index == 0) {
-            // Navigate to MyHomePage when "Home" is tapped
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MyHomePage()),
-            );
-          } else if (index == 1) {
-            // Navigate to the CartPage when "Cart" is tapped
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CartPage(
-                  bottomNavigationKey: bottomNavigationKey,
-                  cart: cart,
-                ),
-              ),
-            );
-          } else if (index == 2) {
-            // Navigate to the PaymentPage when "Payment" is tapped
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      PaymentPage(bottomNavigationKey: bottomNavigationKey)),
-            );
-          }
-        },
-        key: bottomNavigationKey, // Pass the key
+                    : Center(
+                        child: Text('No data available'),
+                      ),
+          ),
+        ],
       ),
     );
   }

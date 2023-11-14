@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'product.dart';
-import 'add_to_cart.dart';
-import 'bottomnavigation.dart';
-import 'payment_page.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -17,10 +15,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Map<String, dynamic>> homePageProducts1 = [];
   List<Map<String, dynamic>> homePageProducts = [];
   List<Map<String, dynamic>> seasonsspeciallist = [];
-  int _currentIndex = 0;
-  final GlobalKey<MyBottomNavigationBarState> bottomNavigationKey =
-      GlobalKey<MyBottomNavigationBarState>();
-  final CartModel cart = CartModel();
 
   @override
   void initState() {
@@ -48,204 +42,197 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Images and Names from JSON URL'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            // All Time Great Gifts List
-            AppBar(
-              title: Text('All Time Great Gifts List'),
-            ),
-            SizedBox(height: 10),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: allTimeGreatGiftsList.length,
-              itemBuilder: (context, index) {
-                final item = allTimeGreatGiftsList[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the new page and pass the category ID
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryDetailPage(categoryId: item['category_id']),
-                      ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(item['imagepath']),
-                    title: Text(item['categoryname']),
-                    subtitle: Text(item['category_id']),
-                  ),
-                );
-              },
-            ),
-
-            // Home Page Products 1
-            AppBar(
-              title: Text('Home Page Products 1'),
-            ),
-            SizedBox(height: 10),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: homePageProducts1.length,
-              itemBuilder: (context, index) {
-                final item = homePageProducts1[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the new page and pass the category ID
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryDetailPage(categoryId: item['category_id']),
-                      ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(item['product_zoom_image']),
-                    title: Text(item['product_name']),
-                    subtitle: Text(item['category_id']),
-                  ),
-                );
-              },
-            ),
-
-            // Home Page Products
-            AppBar(
-              title: Text('Home Page Products'),
-            ),
-            SizedBox(height: 10),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: homePageProducts.length,
-              itemBuilder: (context, index) {
-                final item = allTimeGreatGiftsList[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the new page and pass the category ID
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryDetailPage(categoryId: item['category_id']),
-                      ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(item['product_zoom_image']),
-                    title: Text(item['product_name']),
-                    subtitle: Text(item['category_id']),
-                  ),
-                );
-              },
-            ),
-
-            // All Categories List
-            AppBar(
-              title: Text('All Categories List'),
-            ),
-            SizedBox(height: 10),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: allCategoriesList.length,
-              itemBuilder: (context, index) {
-                final item = allCategoriesList[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the new page and pass the category ID
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryDetailPage(categoryId: item['category_id']),
-                      ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(item['image_path']),
-                    title: Text(item['category_name']),
-                    subtitle: Text(item['category_id']),
-                  ),
-                );
-              },
-            ),
-
-            // Seasons Special List
-            AppBar(
-              title: Text('Seasons Special List'),
-            ),
-            SizedBox(height: 10),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: seasonsspeciallist.length,
-              itemBuilder: (context, index) {
-                final item = seasonsspeciallist[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to the new page and pass the category ID
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CategoryDetailPage(categoryId: item['category_id']),
-                      ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(item['imagepath']),
-                    title: Text(item['categoryname']),
-                    subtitle: Text(item['category_id']),
-                  ),
-                );
-              },
-            ),
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (Navigator.of(context).canPop()) {
+          // If there is a previous route, pop it
+          Navigator.of(context).pop();
+        } else {
+          // If there are no previous routes, exit the app
+          SystemNavigator.pop(); // This will exit the app
+        }
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Guntur2 US'),
+          automaticallyImplyLeading: false,
         ),
-      ),
-      bottomNavigationBar: MyBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          if (index == 0) {
-            // Navigate to MyHomePage when "Home" is tapped
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MyHomePage()),
-            );
-          } else if (index == 1) {
-            // Navigate to the CartPage when "Cart" is tapped
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CartPage(
-                  bottomNavigationKey: bottomNavigationKey,
-                  cart: cart,
-                ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              // All Time Great Gifts List
+              AppBar(
+                title: Text('All Time Great Gifts List'),
+                automaticallyImplyLeading: false,
               ),
-            );
-          } else if (index == 2) {
-            // Navigate to the PaymentPage when "Payment" is tapped
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      PaymentPage(bottomNavigationKey: bottomNavigationKey)),
-            );
-          }
-        },
-        key: bottomNavigationKey, // Pass the key
+              SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: allTimeGreatGiftsList.length,
+                itemBuilder: (context, index) {
+                  final item = allTimeGreatGiftsList[index];
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigate to the new page and pass the category ID
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailPage(
+                            categoryId: item['category_id'],
+                            CategorysName: item['categoryname'],
+                          ),
+                        ),
+                      );
+                    },
+                    child: ListTile(
+                      leading: Image.network(item['imagepath']),
+                      title: Text(item['categoryname']),
+                      subtitle: Text(item['category_id']),
+                    ),
+                  );
+                },
+              ),
+
+              // Home Page Products 1
+              AppBar(
+                title: Text('Home Page Products 1'),
+                automaticallyImplyLeading: false,
+              ),
+              SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: homePageProducts1.length,
+                itemBuilder: (context, index) {
+                  final item = homePageProducts1[index];
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigate to the new page and pass the category ID
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailPage(
+                            categoryId: item['category_id'],
+                            CategorysName: item['product_name'],
+                          ),
+                        ),
+                      );
+                    },
+                    child: ListTile(
+                      leading: Image.network(item['product_zoom_image']),
+                      title: Text(item['product_name']),
+                      subtitle: Text(item['category_id']),
+                    ),
+                  );
+                },
+              ),
+
+              // Home Page Products
+              AppBar(
+                title: Text('Home Page Products'),
+                automaticallyImplyLeading: false,
+              ),
+              SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: homePageProducts.length,
+                itemBuilder: (context, index) {
+                  final item = homePageProducts[index];
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigate to the new page and pass the category ID
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailPage(
+                            categoryId: item['category_id'],
+                            CategorysName: item['product_name'],
+                          ),
+                        ),
+                      );
+                    },
+                    child: ListTile(
+                      leading: Image.network(item['product_zoom_image']),
+                      title: Text(item['product_name']),
+                      subtitle: Text(item['category_id']),
+                    ),
+                  );
+                },
+              ),
+
+              // All Categories List
+              AppBar(
+                title: Text('All Categories List'),
+                automaticallyImplyLeading: false,
+              ),
+              SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: allCategoriesList.length,
+                itemBuilder: (context, index) {
+                  final item = allCategoriesList[index];
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigate to the new page and pass the category ID
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailPage(
+                            categoryId: item['category_id'],
+                            CategorysName: item['category_name'],
+                          ),
+                        ),
+                      );
+                    },
+                    child: ListTile(
+                      leading: Image.network(item['image_path']),
+                      title: Text(item['category_name']),
+                      subtitle: Text(item['category_id']),
+                    ),
+                  );
+                },
+              ),
+
+              // Seasons Special List
+              AppBar(
+                title: Text('Seasons Special List'),
+                automaticallyImplyLeading: false,
+              ),
+              SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: seasonsspeciallist.length,
+                itemBuilder: (context, index) {
+                  final item = seasonsspeciallist[index];
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigate to the new page and pass the category ID
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailPage(
+                            categoryId: item['category_id'],
+                            CategorysName: item['categoryname'],
+                          ),
+                        ),
+                      );
+                    },
+                    child: ListTile(
+                      leading: Image.network(item['imagepath']),
+                      title: Text(item['categoryname']),
+                      subtitle: Text(item['category_id']),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

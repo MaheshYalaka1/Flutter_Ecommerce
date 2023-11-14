@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'bottomnavigation.dart';
-import 'homepage.dart';
 import 'add_to_cart.dart';
 import 'payment_page.dart';
 import 'package:provider/provider.dart';
@@ -23,10 +21,6 @@ class SubcategoryDetailPage extends StatefulWidget {
 }
 
 class _SubcategoryDetailPageState extends State<SubcategoryDetailPage> {
-  int _currentIndex = 0;
-  final GlobalKey<MyBottomNavigationBarState> bottomNavigationKey =
-      GlobalKey<MyBottomNavigationBarState>();
-
   final CartModel cart = CartModel();
 
   @override
@@ -36,7 +30,7 @@ class _SubcategoryDetailPageState extends State<SubcategoryDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Subcategory Detail'),
+        title: Text('product Detail'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -61,9 +55,7 @@ class _SubcategoryDetailPageState extends State<SubcategoryDetailPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PaymentPage(
-                          bottomNavigationKey: bottomNavigationKey,
-                        ),
+                        builder: (context) => PaymentPage(),
                       ),
                     );
                     // Handle Payment button press
@@ -92,43 +84,6 @@ class _SubcategoryDetailPageState extends State<SubcategoryDetailPage> {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: MyBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          if (index == 0) {
-            // Navigate to MyHomePage when "Home" is tapped
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MyHomePage()),
-            );
-          } else if (index == 1) {
-            // Navigate to the CartPage when "Cart" is tapped
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CartPage(
-                  bottomNavigationKey: bottomNavigationKey,
-                  cart: cart,
-                ),
-              ),
-            );
-          } else if (index == 2) {
-            // Navigate to the PaymentPage when "Payment" is tapped
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PaymentPage(
-                  bottomNavigationKey: bottomNavigationKey,
-                ),
-              ),
-            );
-          }
-        },
-        key: bottomNavigationKey,
       ),
     );
   }

@@ -1,5 +1,5 @@
+import 'package:database_flutter/TabScreen.dart';
 import 'package:database_flutter/app/splash_screen/splash_screen.dart';
-import 'package:database_flutter/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:database_flutter/user_auth/presentation/pages/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -28,13 +28,29 @@ Future main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final firebaseAuthService _auth = firebaseAuthService();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "firebase auth",
-      home: SplashScreen(child: LoginPage()),
+      home: FutureBuilder(
+        // Check the user's authentication status
+        future: LoginPage().getCurrentUser(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data != null) {
+              // User is logged in, show the main activity
+              return TabScreen();
+            } else {
+              // User is not logged in, show the login page
+              return SplashScreen(child: LoginPage());
+            }
+          } else {
+            // While checking the user's authentication status, display a loading screen
+            return CircularProgressIndicator();
+          }
+        },
+      ),
     );
   }
 }

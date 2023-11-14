@@ -24,10 +24,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 209, 54, 244),
       body: Center(
         child: Text(
-          "welcom to mahesh fire",
-          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+          "wellcome to us2 guntur",
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
     );

@@ -1,17 +1,8 @@
 import 'package:flutter/material.dart';
-import 'bottomnavigation.dart';
 import 'package:provider/provider.dart';
 import 'payment_page.dart';
 
 class CartPage extends StatelessWidget {
-  final GlobalKey<MyBottomNavigationBarState> bottomNavigationKey;
-  final CartModel cart; // Add this parameter
-
-  CartPage({
-    required this.bottomNavigationKey,
-    required this.cart, // Add this parameter
-  });
-
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartModel>(context);
@@ -19,22 +10,20 @@ class CartPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cart Page'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-            bottomNavigationKey.currentState?.updateIndex(0);
-          },
-        ),
       ),
       body: Column(
         children: <Widget>[
           Expanded(
-            child: ListView.builder(
-              itemCount: cart.items.length,
-              itemBuilder: (context, index) {
-                final item = cart.items[index];
-                return ListTile(
+              child: ListView.builder(
+            itemCount: cart.items.length,
+            itemBuilder: (context, index) {
+              final item = cart.items[index];
+              return Card(
+                // Wrap ListTile with Card
+                elevation:
+                    3, // You can adjust the elevation for the shadow effect
+                margin: EdgeInsets.all(10), // Add some margin for spacing
+                child: ListTile(
                   leading: Image.network(
                     item.image,
                     width: 60,
@@ -68,10 +57,10 @@ class CartPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                );
-              },
-            ),
-          ),
+                ),
+              );
+            },
+          )),
           SizedBox(height: 20),
           Text(
             'Total Price: \$${cart.getTotalPrice().toStringAsFixed(2)}',
@@ -84,9 +73,7 @@ class CartPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PaymentPage(
-                    bottomNavigationKey: bottomNavigationKey,
-                  ),
+                  builder: (context) => PaymentPage(),
                 ),
               );
             },

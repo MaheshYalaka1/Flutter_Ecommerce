@@ -1,11 +1,10 @@
 import 'package:database_flutter/OnlinePayment.dart';
+import 'package:database_flutter/add_to_cart.dart';
 import 'package:flutter/material.dart';
-import 'bottomnavigation.dart';
+import 'homepage.dart';
+import 'signOut.dart';
 
 class PaymentPage extends StatefulWidget {
-  final GlobalKey<MyBottomNavigationBarState> bottomNavigationKey;
-
-  PaymentPage({required this.bottomNavigationKey});
   @override
   _PaymentPageState createState() => _PaymentPageState();
 }
@@ -13,7 +12,6 @@ class PaymentPage extends StatefulWidget {
 class _PaymentPageState extends State<PaymentPage> {
   int _selectedPaymentOption =
       0; // 0 for Cash on Delivery, 1 for Online Payment
-
   BoxDecoration _getDecoration(int option) {
     return BoxDecoration(
       color: _selectedPaymentOption == option
@@ -63,7 +61,17 @@ class _PaymentPageState extends State<PaymentPage> {
               });
             },
             child: Container(
-              decoration: _getDecoration(0),
+              margin:
+                  EdgeInsets.all(10), // Add margin (distance) around the button
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: _selectedPaymentOption == 0
+                      ? Colors.pink
+                      : Colors.transparent,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -75,6 +83,9 @@ class _PaymentPageState extends State<PaymentPage> {
                         _selectedPaymentOption = value!;
                       });
                     },
+                  ),
+                  SizedBox(
+                    height: 13,
                   ),
                   Container(
                     padding: EdgeInsets.all(8),
@@ -96,7 +107,17 @@ class _PaymentPageState extends State<PaymentPage> {
               });
             },
             child: Container(
-              decoration: _getDecoration(1),
+              margin:
+                  EdgeInsets.all(10), // Add margin (distance) around the button
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: _selectedPaymentOption == 1
+                      ? Colors.pink
+                      : Colors.transparent,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -108,6 +129,9 @@ class _PaymentPageState extends State<PaymentPage> {
                         _selectedPaymentOption = value!;
                       });
                     },
+                  ),
+                  SizedBox(
+                    height: 13,
                   ),
                   Container(
                     padding: EdgeInsets.all(8),
@@ -124,21 +148,21 @@ class _PaymentPageState extends State<PaymentPage> {
           ),
           Expanded(
             child: Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.center,
               child: Container(
-                height: 60, // Set the desired button height
+                // Set the desired button height
                 child: InkWell(
                   onTap: _navigateToNextScreen,
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.blue,
                     ),
-                    padding: EdgeInsets.all(16),
+                    width: 120,
+                    height: 60,
+                    padding: EdgeInsets.all(4),
                     child: Center(
                       child: Text(
-                        _selectedPaymentOption == 0
-                            ? 'Continue'
-                            : 'Proceed to Pay',
+                        _selectedPaymentOption == 0 ? 'Continue' : ' Pay',
                         style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
                     ),
@@ -150,5 +174,40 @@ class _PaymentPageState extends State<PaymentPage> {
         ],
       ),
     );
+  }
+
+  void _onTap(int index) {
+    if (index == 0) {
+      // Navigate to MyHomePage when "Home" is tapped
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage()),
+      );
+    } else if (index == 1) {
+      // Navigate to CartPage when "Cart" is tapped
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CartPage(),
+        ),
+      );
+    } else if (index == 2) {
+      // Navigate to PaymentPage when "Payment" is tapped
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentPage(// Pass the key here
+              ),
+        ),
+      );
+    } else if (index == 3) {
+      // Navigate to ProfilePage when "Profile" is tapped
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfilePage(),
+        ),
+      );
+    }
   }
 }
